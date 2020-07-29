@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html class="no-js">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="main.css">
+    <script src='xhrapi.js'></script>
+    <script src='catsAPI.js' defer></script>
+    <link href='js/products.json' />
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <!-- Adding in Google Maps API -->
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-VGmhU4tcnli2vmSt4hkEUh8jyzgx4RY&callback=initMap&libraries=&v=weekly"
+        defer></script>
+    <style type="text/css">
+        /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+        #map {
+            height: 100%;
+        }
+
+        /* Optional: Makes the sample page fill the window. */
+        html,
+        body {
+            height: 50%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+    </header>
+    <section>
+
+
+    </section>
+    <footer>
+        <p>Using CSS Styles from Jessica Gilfillan</p>
+        <p>Client-Side JavaScript Lab 10.</p>
+    </footer>
+    <script>
+        //STEP 2: Bind the HEADER and the SECTION elements above to variables */
+        let header = document.querySelector('header');
+        let section = document.querySelector('section');
+
+
+        //STEP 3: Store JSON URL in a variable
+
+        let requestURL = 'https://tylerpitik.github.io/LabEightClientSideJavaScript/products.json';
+
+        //Step 4:  Create a new XHR (XML HTTP Request) object 
+
+        let request = new XMLHttpRequest();
+        //open a new request using the open method of SHR Object
+        request.open('GET', requestURL);
+        //set up the response type 
+
+        request.responseType = 'json';
+
+        //Send the request 
+
+        request.send();
+
+        //set up an event handler to listen for onload, so we don't do anything until the data return 
+
+        request.onload = function () {
+            let iScreamInc = request.response;
+            console.log(iScreamInc);
+            populateHeader(iScreamInc);
+            topDeals(iScreamInc);
+        }
+
+        //create populateHeader and topDeals functions 
+
+        function populateHeader(jsonObj) {
+            let headerH1 = document.createElement('h1');
+            headerH1.textContent = jsonObj['companyName'];
+            header.appendChild(headerH1);
+            let headerPara = document.createElement('p');
+            headerPara.textContent = jsonObj['headOffice'];
+            header.appendChild(headerPara);
+        }
+
+        function topDeals(jsonObj) {
+            let topDeals = jsonObj['topDeals'];
+            for (let i = 0; i < topDeals.length; i++) {
+                let article = document.createElement('article');
+                let h2 = document.createElement('h2');
+                let img = document.createElement('img');
+                let para1 = document.createElement('p');
+                let para2 = document.createElement('p');
+                let list = document.createElement('ul');
+
+                img.setAttribute('src', 'images/' + topDeals[i]['image']);
+                img.setAttribute('alt', topDeals[i]['image'])
+                h2.textContent = topDeals[i].name;
+                para1.textContent = topDeals[i].price;
+                para2.textContent = topDeals[i].description;
+
+                let features = topDeals[i].features;
+                for (let j = 0; j < features.length; j++) {
+                    let listItem = document.createElement('li');
+                    listItem.textContent = features[j];
+                    list.appendChild(listItem);
+                }
+                article.appendChild(img);
+                article.appendChild(h2);
+                article.appendChild(para1);
+                article.appendChild(para2);
+                article.appendChild(list);
+
+                section.appendChild(article);
+            }
+        }
+        //Adding in Google Maps API (Code taken From Google's Website)
+        //Maps will be darkened as I didn't add billing for it.
+
+        (function (exports) {
+            "use strict";
+
+            function initMap() {
+                var myLatLng = {
+                    lat: 44.4121,
+                    lng: -79.6668
+                };
+                exports.map = new google.maps.Map(document.getElementById("map"), {
+                    center: {
+                        lat: 44.4121,
+                        lng: -79.6668
+                    },
+                    zoom: 16
+                });
+
+                var georgianCollegeStore = new google.maps.Marker({
+                    position: myLatLng,
+                    map: map,
+                    title: 'Georgian College Wacky Store'
+                });
+            }
+
+            exports.initMap = initMap;
+        })((this.window = this.window || {}));
+    </script>
+    <section class="cats">
+        <h3> Here are some cats! (Since it's our final lab I wanted to show some Cats!</h3>
+        <h5> Uses the Fetch API and CatsAPI to get a new cat or cat fact everytime!</h5>
+    </section>
+    <section id='catFacts'>
+        <button id='catFactButton'>New Cat Fact Please!</button>
+        <div id='catFactDiv'></div>
+    </section>
+    <section id='catPic'>
+        <button id="catPicButton">New Cat Please!</button>
+        <div id='catsDiv'></div>
+    </section>
+    <div id="map"></div>
+    
+</body>
+
+</html>
